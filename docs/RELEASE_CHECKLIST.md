@@ -24,7 +24,7 @@ Existing tests that require optional CUDA conditions may be skipped on CPU. Test
 
 ## Before public release
 
-- Confirm copyright ownership/third-party notices and select a license. No license is implied by uploading the files.
+- MIT License selected by the owner on 2026-10-04 and included at the repository root (copyright 2026 ayuelei). Complete the third-party provenance/notice review before public release; MIT does not replace third-party or dataset terms.
 - Confirm author names, manuscript title and eventual citation/DOI; do not invent an accepted publication.
 - Review provider terms before sharing any future trained weights, examples or patient-level output.
 - Review this GitHub code-only tree; repository visibility is currently private and was not changed during collection.

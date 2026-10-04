@@ -10,6 +10,6 @@
   "clean_environment_installation": "Not performed; system pip check found conflicts in unrelated installed packages not required by this release",
   "full_gpu_campaign": "Not rerun during code collection",
   "external_pipeline": "Tools and instructions collected; full fresh external pipeline not rerun during code collection",
-  "license": "Pending explicit owner choice; no LICENSE file is provided",
+  "license": "MIT; confirmed by the owner on 2026-10-04; copyright (c) 2026 ayuelei; root LICENSE included",
   "repository_visibility": "Private; not changed during collection"
 }

@@ -56,6 +56,10 @@ The shared training engine imports spectral/physics support modules from earlier
 
 The five-domain results support the overall tested configuration. The QAMEBI AUROC difference from FedAvg is uncertain; this release does not claim external superiority, clinical readiness, causal explanations or formal privacy protection. Fixed-feature monotonicity is a structural property, not proof that BI-RADS predictions are accurate or that their independent AUROC contribution is established.
 
+## License
+
+The original project code is released under the [MIT License](LICENSE), copyright (c) 2026 ayuelei. Third-party code and dependencies retain their applicable licenses. Dataset/provider permissions are separate: the code license does not authorize redistribution of medical data, annotations or patient-level outputs. See [licensing details](docs/LICENSING.md).
+
 ## Release status and citation
 
 This is a preparation-stage repository for a manuscript, not a claimed accepted publication. Author list, publication DOI and final citation will be added when confirmed. See [release checklist](docs/RELEASE_CHECKLIST.md), [source provenance](docs/PROVENANCE.md), and [licensing](docs/LICENSING.md). The repository owner's choice of visibility and license is independent of data-provider permissions.

@@ -7,6 +7,7 @@ name = "fedevi-dg"
 version = "0.1.0"
 description = "Federated breast ultrasound classification with heterogeneous auxiliary annotations"
 requires-python = ">=3.12,<3.13"
+license = {file = "LICENSE"}
 
 [tool.setuptools.packages.find]
 include = ["fedusdg_mvp*"]
