@@ -1,0 +1,103 @@
+{
+  "dataset": "QAMEBI_BUID",
+  "role": "locked_public_external_validation",
+  "analysis_unit": "lesion_record",
+  "patient_grouping_reliable": false,
+  "n": 231,
+  "class_counts": {
+    "0": 109,
+    "1": 122
+  },
+  "primary_prediction": "arithmetic_mean_probability_across_seeds_42_43_44",
+  "primary_endpoint": "AUROC",
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260925,
+  "methods": {
+    "fedavg": {
+      "source_only_ensemble_threshold": 0.57,
+      "ensemble_metrics": {
+        "auc": 0.8516318243344864,
+        "balanced_accuracy": 0.7502631974733043,
+        "sensitivity": 0.8032786885245902,
+        "specificity": 0.6972477064220184,
+        "macro_f1": 0.7509881422924901,
+        "loss": 0.7371260401872151,
+        "n": 231,
+        "brier": 0.18960893423532366,
+        "ece": 0.16855404719616454,
+        "sensitivity_at_specificity_90": 0.5901639344262295
+      },
+      "seed_auc_mean": 0.8411540582543742,
+      "seed_auc_sample_std": 0.019793320441173344,
+      "seed_lesion_dice_mean": null,
+      "ensemble_auc_bootstrap_95_ci": {
+        "lower": 0.801124629484778,
+        "upper": 0.8984569521523924,
+        "valid_replicates": 2000
+      }
+    },
+    "fedevi_mtl": {
+      "source_only_ensemble_threshold": 0.4,
+      "ensemble_metrics": {
+        "auc": 0.8449390885847496,
+        "balanced_accuracy": 0.7535719657091292,
+        "sensitivity": 0.9016393442622951,
+        "specificity": 0.6055045871559633,
+        "macro_f1": 0.7529411764705882,
+        "loss": 0.8088216021517783,
+        "n": 231,
+        "brier": 0.1923899004128619,
+        "ece": 0.17553621573029077,
+        "sensitivity_at_specificity_90": 0.5491803278688525
+      },
+      "seed_auc_mean": 0.8386975485035344,
+      "seed_auc_sample_std": 0.024880735479559043,
+      "seed_lesion_dice_mean": 0.7737564460054415,
+      "ensemble_auc_bootstrap_95_ci": {
+        "lower": 0.7935381847821429,
+        "upper": 0.8935848226325319,
+        "valid_replicates": 2000
+      }
+    },
+    "fedevi_monotonic": {
+      "source_only_ensemble_threshold": 0.56,
+      "ensemble_metrics": {
+        "auc": 0.8540382012332681,
+        "balanced_accuracy": 0.7601143029026921,
+        "sensitivity": 0.8688524590163934,
+        "specificity": 0.6513761467889908,
+        "macro_f1": 0.7607411385606875,
+        "loss": 0.9392097004007421,
+        "n": 231,
+        "brier": 0.19223080576857268,
+        "ece": 0.18724754399291316,
+        "sensitivity_at_specificity_90": 0.5655737704918032
+      },
+      "seed_auc_mean": 0.845490549957387,
+      "seed_auc_sample_std": 0.008766550235988595,
+      "seed_lesion_dice_mean": 0.760271115718456,
+      "ensemble_auc_bootstrap_95_ci": {
+        "lower": 0.8013394473519634,
+        "upper": 0.8996230780102804,
+        "valid_replicates": 2000
+      }
+    }
+  },
+  "paired_auc_differences": {
+    "fedevi_monotonic_minus_fedavg": {
+      "lower": -0.020408748899008664,
+      "upper": 0.02354666275959216,
+      "valid_replicates": 2000,
+      "probability_delta_gt_zero": 0.591,
+      "point_estimate": 0.002406376898781759
+    },
+    "fedevi_monotonic_minus_fedevi_mtl": {
+      "lower": -0.014253686451665009,
+      "upper": 0.033088732114467403,
+      "valid_replicates": 2000,
+      "probability_delta_gt_zero": 0.7755,
+      "point_estimate": 0.009099112648518481
+    }
+  },
+  "not_prospective_clinical_confirmation": true
+}

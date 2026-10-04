@@ -1,0 +1,20 @@
+{
+  "description": "Public structured summary of the frozen QAMEBI protocol; not the original protocol file's byte-identical archival copy",
+  "target": "QAMEBI",
+  "source_domains": ["BUSBRA", "BUSI_WHU", "GDPH", "SYSUCC", "UDIAT"],
+  "methods": ["fedevi_monotonic", "fedavg", "fedevi_mtl"],
+  "seeds": [42, 43, 44],
+  "rounds": 30,
+  "split_seed": 20260728,
+  "source_validation_fraction": 0.15,
+  "checkpoint_selection": "source validation only",
+  "ensemble": "mean of aligned three-seed probabilities",
+  "primary_endpoint": "external ensemble AUROC",
+  "bootstrap_iterations": 2000,
+  "near_duplicate_hamming_threshold": 4,
+  "target_used_for_training": false,
+  "target_used_for_model_selection": false,
+  "target_used_for_calibration": false,
+  "target_used_for_threshold_selection": false,
+  "limitations": "Retrospective public external validation, not prospective clinical confirmation; no BI-RADS grades in QAMEBI"
+}

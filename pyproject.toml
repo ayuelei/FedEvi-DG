@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fedevi-dg"
+version = "0.1.0"
+description = "Federated breast ultrasound classification with heterogeneous auxiliary annotations"
+requires-python = ">=3.12,<3.13"
+
+[tool.setuptools.packages.find]
+include = ["fedusdg_mvp*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "scripts"]

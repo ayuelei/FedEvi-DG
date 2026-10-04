@@ -1,0 +1,3 @@
+variant,candidate_minus_r0_macro_auc,ci95_lower,ci95_upper,positive_target_domains,directional_gate,ci_excludes_zero
+original_seed42,0.006140682473833125,-0.0010234697899561495,0.013328852282640101,4,True,False
+snapshot_consistent_replacement,0.006624847694455371,-0.0005927288922527891,0.014195323576149882,3,True,False

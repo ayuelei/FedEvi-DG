@@ -1,0 +1,207 @@
+{
+  "BUSBRA": {
+    "source_train": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "5970008ab232d5f1a18a797f4a8c38a55d446ed94f89930f25cc12cb71bf3ee8",
+      "rows": 2542
+    },
+    "source_val": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "7b73bbd1ab3b6e9fa901ae667031713ee17abe0cf476a864ab163cac287c15cc",
+      "rows": 450
+    },
+    "target_test": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "535f6ef97e305cbd53773ecd23c75ad015aa55f393ae7f6b9a93fdda5ba04012",
+      "rows": 1875
+    }
+  },
+  "BUSI_WHU": {
+    "source_train": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "8b24a293b9fb5fa7d6aa7ad1527c629501878f24a30b4ede80cbd1c6b61f8873",
+      "rows": 3340
+    },
+    "source_val": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "20b1ae2b7c78ad42689a2aea1e99ada20baa67fd27f1019e7db49575ff5d8713",
+      "rows": 603
+    },
+    "target_test": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "7e57db84379bb45b0fa71ba6d9f8cb04eaeda9d640e54dce8ac56360d605cec9",
+      "rows": 924
+    }
+  },
+  "GDPH": {
+    "source_train": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "7e9d7db8378f0448c53356bb173160520cf56cd89afd12e080aa32b840304518",
+      "rows": 3426
+    },
+    "source_val": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "91caad3e9aa32e181cdc1f578dc99e45007313123c1459179e48849c4e9d3b44",
+      "rows": 629
+    },
+    "target_test": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "31a3303bcc01f67ac0b1f31c4572adc8c0d3297bcc98fbeb1f5198b838aeba4a",
+      "rows": 812
+    }
+  },
+  "SYSUCC": {
+    "source_train": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "4c721320e71790183c83d0bceee615a1ba8cce4ab415e22ca8cbf100a7c512fd",
+      "rows": 3184
+    },
+    "source_val": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "569aff31ba4ac172de90be17a03c741c2c2d585e61c335172f5c74e1fe7f45ec",
+      "rows": 586
+    },
+    "target_test": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "f6f0683251bb25c4b9a72452cc2d5a239d113f0aac46f1d91a3cd9a881266926",
+      "rows": 1097
+    }
+  },
+  "UDIAT": {
+    "source_train": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "d39e469b1e0a59af3b42c2604fd94b3a34e137ef0c1f2792386c88168331d57e",
+      "rows": 3981
+    },
+    "source_val": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "9f666c47acc9619e9e56040c2a67bbf01e7d089d987daf790180005b736b31e8",
+      "rows": 727
+    },
+    "target_test": {
+      "columns": [
+        "dataset",
+        "sha256",
+        "patient_id",
+        "patient_id_source",
+        "label",
+        "birads_ordinal",
+        "mask_sha256"
+      ],
+      "content_sha256": "7b7ec8a3e70ee698433b991ed276a63ad3d04884ca3d80d3a508fdee6193b146",
+      "rows": 159
+    }
+  }
+}

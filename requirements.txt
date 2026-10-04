@@ -1,0 +1,13 @@
+# Install a suitable PyTorch CPU/CUDA build first; see README.
+torch==2.4.1
+torchvision==0.19.1
+numpy==2.2.6
+pandas==2.2.3
+scipy==1.14.1
+scikit-learn==1.5.2
+Pillow==10.4.0
+opencv-python==4.13.0.90
+openpyxl==3.1.5
+matplotlib==3.9.2
+tabulate==0.10.0
+pytest==9.0.3

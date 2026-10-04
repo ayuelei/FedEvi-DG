@@ -1,0 +1,25 @@
+# Never distribute medical data, individual predictions or local credentials.
+data/
+splits/
+outputs/
+checkpoints/
+*.pt
+*.pth
+*.dcm
+*.dicom
+*.mat
+*.zip
+*.tar
+*.gz
+.env
+.env.*
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.idea/
+.DS_Store
+docs/paper/figures/

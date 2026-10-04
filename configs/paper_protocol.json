@@ -1,0 +1,20 @@
+{
+  "main_method": "fedevi_monotonic",
+  "domains": ["BUSBRA", "BUSI_WHU", "GDPH", "SYSUCC", "UDIAT"],
+  "seeds": [42, 43, 44],
+  "split_seed": 20260728,
+  "validation_fraction": 0.15,
+  "input_size": 256,
+  "rounds": 30,
+  "local_epochs": 1,
+  "batch_size": 32,
+  "optimizer": "AdamW",
+  "learning_rate": 0.0001,
+  "weight_decay": 0.0001,
+  "source_validation_interval": 5,
+  "checkpoint_selection": "highest source macro AUROC, then lower source validation loss, then earlier round",
+  "bootstrap_iterations": 2000,
+  "bootstrap_seed_lodo": 20260926,
+  "external_qamebi_source_domains": ["BUSBRA", "BUSI_WHU", "GDPH", "SYSUCC", "UDIAT"],
+  "buscot_source_domains": ["BUSBRA", "BUSI_WHU", "SYSUCC", "UDIAT"]
+}
