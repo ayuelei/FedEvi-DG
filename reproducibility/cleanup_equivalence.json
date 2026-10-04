@@ -1,0 +1,53 @@
+{
+  "validation_date": "2026-10-04",
+  "base_release_commit": "626e8cacb0b46db5bc596c3977d73d59e51fa002",
+  "methods": [
+    "fedavg",
+    "fedavg_ord",
+    "fedevi_dg",
+    "fedevi_mask_shift",
+    "fedevi_monotonic",
+    "fedevi_mtl",
+    "fedevi_no_taskagg",
+    "fedevi_seg_only",
+    "fedevi_shuffle"
+  ],
+  "synthetic_setup": {
+    "device": "cpu",
+    "seed": 42,
+    "source_clients": 3,
+    "held_out_clients": 1,
+    "samples_per_client_split": 6,
+    "rounds": 3,
+    "local_epochs": 1,
+    "eval_interval": 1,
+    "batch_size": 2,
+    "input_size": 8,
+    "backbone": "Tiny deterministic convolutional backbone with BatchNorm; actual model heads, losses, trainer and aggregation",
+    "annotations": "Heterogeneous: one source without masks; one source without BI-RADS"
+  },
+  "comparison": {
+    "selected_model_tensor_sha256": "exact match for every tensor and method",
+    "target_metrics_and_scores": "exact match",
+    "source_validation_metrics": "exact match",
+    "source_selected_threshold": "exact match",
+    "best_round": "exact match",
+    "method_metadata": "exact match",
+    "training_history": "exact match after removing two all-zero obsolete diagnostics"
+  },
+  "removed_history_fields": [
+    "client_relay_loss",
+    "client_relay_weight"
+  ],
+  "removed_fields_verified_zero_for_all_methods": true,
+  "raw_fingerprint_sha256": {
+    "before": "fd986b124ed98a645c9260e3660cbf041f565024414f28ec3acb3a6d388878b5",
+    "after": "b6d46a861d4f4ff24581af0edcaa500f9abe1df04b6283fa20f7645460790af2"
+  },
+  "fingerprint_note": "Raw JSON hashes differ only because obsolete zero-valued history fields were removed. Comparison normalizes only these fields.",
+  "limits": [
+    "Synthetic regression is not a complete multi-seed GPU performance experiment.",
+    "No guarantee of bitwise identity on other hardware/library versions.",
+    "Historical source snapshots remain locally and in prior GitHub commits; not distributed in the current tree."
+  ]
+}

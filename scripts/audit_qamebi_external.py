@@ -53,9 +53,11 @@ def _phash_file(path: Path) -> str:
 
 
 def _phash_bytes(values: list[str]) -> np.ndarray:
-    return np.asarray([int(value, 16) for value in values], dtype=">u8").view(
-        np.uint8
-    ).reshape(-1, 8)
+    return (
+        np.asarray([int(value, 16) for value in values], dtype=">u8")
+        .view(np.uint8)
+        .reshape(-1, 8)
+    )
 
 
 def _hamming_distances(value: str, references: np.ndarray) -> np.ndarray:
@@ -304,9 +306,7 @@ def main() -> None:
         own_distances = _hamming_distances(str(row.phash), candidate_phashes)
         own_distances[index] = 255
         internal_exact.append(bool((audit["sha256"] == row.sha256).sum() > 1))
-        internal_near.append(
-            int(own_distances.min()) <= args.near_duplicate_distance
-        )
+        internal_near.append(int(own_distances.min()) <= args.near_duplicate_distance)
     audit["exact_reference_overlap"] = exact_flags
     audit["near_reference_overlap"] = near_flags
     audit["minimum_reference_phash_distance"] = minimum_distances
@@ -329,10 +329,9 @@ def main() -> None:
             "manually retained records are not pHash near duplicates: "
             f"{sorted(non_near_kept_records)}"
         )
-    audit["internal_near_duplicate_excluded"] = (
-        audit["internal_near_duplicate"]
-        & ~audit["record_id"].isin(keep_internal_near)
-    )
+    audit["internal_near_duplicate_excluded"] = audit[
+        "internal_near_duplicate"
+    ] & ~audit["record_id"].isin(keep_internal_near)
     audit["eligible"] = ~(
         audit["exact_reference_overlap"]
         | audit["near_reference_overlap"]
@@ -347,9 +346,9 @@ def main() -> None:
     audit.to_csv(args.output_dir / "audit_all.csv", index=False)
     frozen.to_csv(args.output_dir / "frozen_manifest.csv", index=False)
     reference_frame.to_csv(args.output_dir / "reference_inventory.csv", index=False)
-    pd.DataFrame(
-        unreadable_references, columns=["source", "path", "error"]
-    ).to_csv(args.output_dir / "unreadable_references.csv", index=False)
+    pd.DataFrame(unreadable_references, columns=["source", "path", "error"]).to_csv(
+        args.output_dir / "unreadable_references.csv", index=False
+    )
     summary = {
         "dataset": "QAMEBI_BUID",
         "role": "locked_public_external_validation",
@@ -382,28 +381,20 @@ def main() -> None:
             str(key): int(value)
             for key, value in reference_frame["source"].value_counts().items()
         },
-        "excluded_exact_reference_overlap": int(
-            audit["exact_reference_overlap"].sum()
-        ),
-        "excluded_near_reference_overlap": int(
-            audit["near_reference_overlap"].sum()
-        ),
+        "excluded_exact_reference_overlap": int(audit["exact_reference_overlap"].sum()),
+        "excluded_near_reference_overlap": int(audit["near_reference_overlap"].sum()),
         "excluded_internal_exact_duplicate": int(
             audit["internal_exact_duplicate"].sum()
         ),
         "excluded_internal_near_duplicate": int(
             audit["internal_near_duplicate_excluded"].sum()
         ),
-        "internal_near_duplicate_members": int(
-            audit["internal_near_duplicate"].sum()
-        ),
+        "internal_near_duplicate_members": int(audit["internal_near_duplicate"].sum()),
         "manually_retained_internal_near_records": sorted(keep_internal_near),
         "minimum_reference_phash_distance": int(
             audit["minimum_reference_phash_distance"].min()
         ),
-        "frozen_manifest_sha256": _sha256_file(
-            args.output_dir / "frozen_manifest.csv"
-        ),
+        "frozen_manifest_sha256": _sha256_file(args.output_dir / "frozen_manifest.csv"),
         "model_predictions_seen": False,
     }
     (args.output_dir / "audit_summary.json").write_text(

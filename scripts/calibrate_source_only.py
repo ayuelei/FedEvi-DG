@@ -98,9 +98,9 @@ def main() -> None:
     raw_scores = np.asarray(target["scores"], dtype=float)
     calibrated = _sigmoid(_logits(raw_scores) / temperature)
     old_threshold = float(
-        json.loads(
-            (args.run_dir / "run_metadata.json").read_text(encoding="utf-8")
-        )["source_threshold"]
+        json.loads((args.run_dir / "run_metadata.json").read_text(encoding="utf-8"))[
+            "source_threshold"
+        ]
     )
     calibrated_threshold = float(
         _sigmoid(np.asarray([_logits(np.asarray([old_threshold]))[0] / temperature]))[0]
@@ -115,9 +115,7 @@ def main() -> None:
         "target_auc_raw": float(roc_auc_score(labels, raw_scores)),
         "target_auc_calibrated": float(roc_auc_score(labels, calibrated)),
         "target_brier_raw": float(brier_score_loss(labels, raw_scores)),
-        "target_brier_calibrated": float(
-            brier_score_loss(labels, calibrated)
-        ),
+        "target_brier_calibrated": float(brier_score_loss(labels, calibrated)),
         "target_ece_raw": _ece(labels, raw_scores),
         "target_ece_calibrated": _ece(labels, calibrated),
         "raw_source_threshold": old_threshold,

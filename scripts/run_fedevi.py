@@ -4,12 +4,18 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts import run_fedusdg_mvp as runner
+from scripts import train_fedevi as runner
 
 PAPER_METHODS = (
-    "fedevi_monotonic", "fedavg", "fedevi_mtl", "fedevi_seg_only",
-    "fedavg_ord", "fedevi_shuffle", "fedevi_mask_shift",
-    "fedevi_dg", "fedevi_no_taskagg",
+    "fedevi_monotonic",
+    "fedavg",
+    "fedevi_mtl",
+    "fedevi_seg_only",
+    "fedavg_ord",
+    "fedevi_shuffle",
+    "fedevi_mask_shift",
+    "fedevi_dg",
+    "fedevi_no_taskagg",
 )
 
 

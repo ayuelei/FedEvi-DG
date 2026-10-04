@@ -1,15 +1,21 @@
 {
   "validation_date": "2026-10-04",
+  "stage": "Paper-only cleanup",
+  "base_release_commit": "626e8cacb0b46db5bc596c3977d73d59e51fa002",
   "environment": "Existing development environment: Python 3.12.6, PyTorch 2.4.1+cu124; CPU-only tests",
-  "preserved_test_suite": {"passed": 246, "skipped": 2, "skip_reason": "CUDA unavailable under CPU-only test configuration"},
-  "public_wrapper_tests": {"passed": 4, "skipped": 0, "coverage": "portable split digest, historical source digest, campaign dry-run safety, classification and patient aggregation endpoints"},
+  "paper_only_test_suite": {
+    "passed": 177,
+    "skipped": 1,
+    "skip_reason": "CUDA condition unavailable under CPU-only test configuration"
+  },
+  "retained_method_equivalence": "PASS: all nine methods on the synthetic three-round heterogeneous-annotation regression; see cleanup_equivalence.json",
   "cli_help_checks": "PASS: paper runner, raw preparation and portable classification analysis",
   "synthetic_demo": "PASS: forward path and fixed-feature ordinal monotonicity, no medical data or pretrained download",
-  "local_raw_data_reconstruction": "PASS: all 15 root-independent split fingerprints match the frozen paper manifests",
-  "historical_candidate_snapshot": "PASS: source hashes match recovered 344b61c9 implementation",
-  "clean_environment_installation": "Not performed; system pip check found conflicts in unrelated installed packages not required by this release",
-  "full_gpu_campaign": "Not rerun during code collection",
-  "external_pipeline": "Tools and instructions collected; full fresh external pipeline not rerun during code collection",
+  "local_raw_data_reconstruction": "PASS: re-parsed original data after cleanup; all 15 root-independent split fingerprints match the frozen paper manifests",
+  "excluded_legacy_implementations": "Physics/frequency/relay methods, obsolete aggregate script and historical source snapshots removed from the current tree; locally archived and prior GitHub commits retained",
+  "clean_environment_installation": "Not performed; validation used the existing development environment",
+  "full_gpu_campaign": "Not rerun during code collection or cleanup",
+  "external_pipeline": "Tools and instructions provided; full fresh external pipeline not rerun during code collection or cleanup",
   "license": "MIT; confirmed by the owner on 2026-10-04; copyright (c) 2026 ayuelei; root LICENSE included",
-  "repository_visibility": "Private; not changed during collection"
+  "repository_visibility": "Private; not changed"
 }

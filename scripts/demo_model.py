@@ -6,15 +6,16 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import torch
 from torchvision.models import resnet18
-from fedusdg_mvp.evidence import SourceNormalizedEvidenceResNet18
-from fedusdg_mvp.preprocessing import SourceNormalization
+from fedevi_dg.evidence import SourceNormalizedEvidenceResNet18
+from fedevi_dg.preprocessing import SourceNormalization
 
 
 def main() -> None:
     torch.set_num_threads(2)
     torch.manual_seed(42)
     model = SourceNormalizedEvidenceResNet18(
-        resnet18(weights=None), SourceNormalization(mean=0.5, std=0.2),
+        resnet18(weights=None),
+        SourceNormalization(mean=0.5, std=0.2),
         monotonic_ordinal=True,
     ).eval()
     image = torch.rand(2, 1, 256, 256)

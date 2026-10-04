@@ -77,9 +77,7 @@ def main() -> None:
     if args.output_dir.exists():
         raise FileExistsError(f"refusing to overwrite {args.output_dir}")
 
-    expert = json.loads(
-        (args.metadata_dir / "BUS-Expert_dataset.json").read_text()
-    )
+    expert = json.loads((args.metadata_dir / "BUS-Expert_dataset.json").read_text())
     lesion = json.loads((args.metadata_dir / "lesion_dataset.json").read_text())
     if args.development_bundle is not None:
         development_paths = [
@@ -94,9 +92,11 @@ def main() -> None:
         development = pd.read_csv(args.development_manifest)
     development_sha = set(development["sha256"].astype(str))
     development_phash_hex = development["phash"].astype(str).tolist()
-    development_phashes = np.asarray(
-        [int(value, 16) for value in development_phash_hex], dtype=">u8"
-    ).view(np.uint8).reshape(-1, 8)
+    development_phashes = (
+        np.asarray([int(value, 16) for value in development_phash_hex], dtype=">u8")
+        .view(np.uint8)
+        .reshape(-1, 8)
+    )
 
     rows = []
     with zipfile.ZipFile(args.archive) as archive:
@@ -178,9 +178,7 @@ def main() -> None:
         "excluded_known_source": int(audit["known_source_overlap"].sum()),
         "excluded_exact_sha256": int(audit["exact_sha256_overlap"].sum()),
         "excluded_near_duplicate": int(audit["near_duplicate_overlap"].sum()),
-        "frozen_manifest_sha256": _sha256_file(
-            args.output_dir / "frozen_manifest.csv"
-        ),
+        "frozen_manifest_sha256": _sha256_file(args.output_dir / "frozen_manifest.csv"),
         "model_predictions_seen": False,
     }
     (args.output_dir / "freeze.json").write_text(

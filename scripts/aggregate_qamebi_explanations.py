@@ -57,9 +57,7 @@ def main() -> None:
     }
     original_auc = float(roc_auc_score(labels, ensemble["original_score"]))
     lesion_only_auc = float(roc_auc_score(labels, ensemble["lesion_only_score"]))
-    lesion_erased_auc = float(
-        roc_auc_score(labels, ensemble["lesion_erased_score"])
-    )
+    lesion_erased_auc = float(roc_auc_score(labels, ensemble["lesion_erased_score"]))
     high = ensemble["ordinal_clamp_high_score"]
     low = ensemble["ordinal_clamp_low_score"]
     high_log_odds = ensemble["ordinal_clamp_high_log_odds"]

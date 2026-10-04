@@ -16,8 +16,8 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from fedusdg_mvp.manifest import APPROVED_DOMAINS
-from fedusdg_mvp.provenance import atomic_write_json
+from fedevi_dg.manifest import APPROVED_DOMAINS
+from fedevi_dg.provenance import atomic_write_json
 
 
 FRAME_NAMES = ("source_train", "source_val", "target_test")

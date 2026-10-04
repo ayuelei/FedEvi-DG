@@ -16,7 +16,7 @@ Execute commands from the repository root with Python 3.12 and the pinned enviro
 | `fedevi_dg` | R0: unconstrained feature/ordinal concatenation classifier |
 | `fedevi_no_taskagg` | Ordinary aggregation instead of valid-label-aware auxiliary aggregation |
 
-Exact behavior is preserved in the model, losses and trainer. Historical physics/frequency code is retained for import compatibility, not presented as the final method.
+The current model, losses and trainer contain only these nine methods. Earlier physics/frequency/relay implementations are excluded. A synthetic regression against the pre-cleanup release checks retained training behavior; see [provenance](PROVENANCE.md) for its scope.
 
 ## One smoke run
 
@@ -44,13 +44,13 @@ python scripts/run_campaign.py --manifest-root splits/prepared/lodo \
 # Add --execute only when ready for the full GPU campaign.
 ```
 
-The script runs sequentially, skips completed runs, refuses to overwrite incomplete run artifacts through the underlying runner, and requires a clean Git checkout. Run folders follow the layout in `scripts/analyze_fedevi_final.py::METHOD_ROOTS`; legacy directory names do not imply additional protocol stages. Do not mix previous and fresh campaigns in the same folders.
+The script runs sequentially, skips completed runs, refuses to overwrite incomplete run artifacts through the underlying runner, and requires a clean Git checkout. Run folders are `outputs/lodo/target_TARGET/METHOD/seed_SEED`; source calibration is saved under `outputs/lodo_calibration/target_TARGET/METHOD/seed_SEED`. Do not mix previous and fresh campaigns in the same folders.
 
 ```bash
-python scripts/analyze_lodo.py --output-root outputs/new_lodo_analysis --calibration
+python scripts/analyze_lodo.py --output-root outputs/lodo_analysis --calibration
 ```
 
-This requires all nine methods × five domains × three seeds. It produces seed/ensemble AUROC, paired bootstrap intervals, sensitivity at 90% specificity and patient-maximum-probability sensitivity analyses; `--calibration` additionally produces calibration and decision curves. It reuses the original analysis functions while disabling historical seed-42 replacement paths for fresh campaigns. The original `analyze_fedevi_final.py` remains available for the archived output layout and its complete ordinal/spatial audit.
+This requires all nine methods × five domains × three seeds. It produces seed/ensemble AUROC, paired bootstrap intervals, sensitivity at 90% specificity and patient-maximum-probability sensitivity analyses; `--calibration` additionally produces calibration and decision curves. Historical replacement folders are disabled for fresh campaigns. `analyze_fedevi_final.py` additionally requires the ordinal/spatial explanation inputs described below.
 
 Ensemble metrics average aligned seed predictions before scoring. Reliable patient IDs are aggregated before the primary metrics. A directional gate is not statistical significance. Sensitivity at 90% specificity is a retrospective ROC endpoint, not a target-selected deployment threshold. Calibrators use only source validation.
 
@@ -58,10 +58,10 @@ Ensemble metrics average aligned seed predictions before scoring. Reliable patie
 
 ```bash
 python scripts/evaluate_fedevi_explanations.py \
-  --run-dir outputs/fedevi_monotonic_gate/target_BUSBRA/fedevi_monotonic/seed_42 \
+  --run-dir outputs/lodo/target_BUSBRA/fedevi_monotonic/seed_42 \
   --manifest splits/prepared/lodo/target_BUSBRA/target_test.csv \
   --data-root /path/to/provider_data \
-  --output-dir outputs/fedevi_monotonic_gate_explanations_v2/target_BUSBRA/seed_42
+  --output-dir outputs/explanations/target_BUSBRA/seed_42
 ```
 
 Repeat for seeds 43/44 and other domains as needed. Outputs include local intervention predictions and aggregate metrics for lesion-only/erased images, mask agreement and conditional ordinal clamping. They are probes of the fitted model, not causal clinical explanations. A ground-truth mask is not required for inference. The final ordinal/spatial aggregation additionally needs BUS-CoT explanation predictions and mask-shift control metrics; these are not fabricated if unavailable.
@@ -108,17 +108,17 @@ QAMEBI does not supply BI-RADS grades; ordinal accuracy cannot be evaluated ther
 
 ### BUS-CoT supplementary evaluation
 
-Use `audit_buscot_external.py` on the provider archive/metadata and development bundle, then `extract_frozen_buscot.py` on the frozen, screened manifest. This selection is distinct from QAMEBI. The paper's source combination is the **GDPH-held-out** model trained on BUSBRA, BUSI_WHU, SYSUCC and UDIAT, not a five-source retraining. Evaluate seeds 42/43/44 with `evaluate_fedevi_explanations.py`, using the extracted local manifest/data root, and write to `outputs/fedevi_monotonic_gate_buscot_reasoning_v3/seed_SEED`. Masks/BI-RADS/patient IDs are used only for post-training evaluation. Do not characterize this supplementary annotation benchmark as prospective clinical confirmation.
+Use `audit_buscot_external.py` on the provider archive/metadata and development bundle, then `extract_frozen_buscot.py` on the frozen, screened manifest. This selection is distinct from QAMEBI. The paper's source combination is the **GDPH-held-out** model trained on BUSBRA, BUSI_WHU, SYSUCC and UDIAT, not a five-source retraining. Evaluate seeds 42/43/44 with `evaluate_fedevi_explanations.py`, using the extracted local manifest/data root, and write to `outputs/buscot_explanations/seed_SEED`. Masks/BI-RADS/patient IDs are used only for post-training evaluation. Do not characterize this supplementary annotation benchmark as prospective clinical confirmation.
 
-## Complete archived analysis and plots
+## Complete analysis and plots
 
 When all classification, source calibration, BUSBRA and BUS-CoT explanation outputs are present in the documented layout:
 
 ```bash
-python scripts/analyze_fedevi_final.py --output-root outputs/fedevi_final_analysis_v3_audit
+python scripts/analyze_fedevi_final.py --output-root outputs/lodo_analysis
 python scripts/generate_paper_figures.py
 ```
 
-The full plot script additionally reads QAMEBI aggregate outputs, local ensemble predictions, reliability and decision-curve tables; see its file reads. It writes quantitative panels to `docs/paper/figures/`. It also retains a programmatic framework illustration, which is **not** the subsequently selected editorial framework image. Medical image panels/AI-drawn manuscript artwork are not distributed. Aggregate-only reference CSVs let users inspect reported metrics without datasets, but do not replace independently regenerating predictions.
+Run the complete analysis instead of the classification-only command when all explanation inputs are available; each command refuses to overwrite its output folder. The full plot script additionally reads QAMEBI aggregate outputs, local ensemble predictions, reliability and decision-curve tables; see its file reads. It writes quantitative panels to `docs/paper/figures/`. It also retains a programmatic framework illustration, which is **not** the subsequently selected editorial framework image. Medical image panels/AI-drawn manuscript artwork are not distributed. Aggregate-only reference CSVs let users inspect reported metrics without datasets, but do not replace independently regenerating predictions.
 
 For exact historical model-source inspection, see [provenance](PROVENANCE.md). New hardware/library versions may change numerical results even when split digests match.

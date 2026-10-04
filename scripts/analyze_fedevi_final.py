@@ -29,46 +29,34 @@ SEEDS = (42, 43, 44)
 MASK_TARGETS = frozenset({"BUSBRA", "BUSI_WHU", "UDIAT"})
 CANDIDATE = "fedevi_monotonic"
 METHOD_ROOTS = {
-    CANDIDATE: Path("outputs/fedevi_monotonic_gate"),
-    "fedavg": Path("outputs/fedusdg_mvp_phase3"),
-    "fedevi_mtl": Path("outputs/fedevi_controls_gate"),
-    "fedevi_no_taskagg": Path("outputs/fedevi_controls_gate"),
-    "fedevi_shuffle": Path("outputs/fedevi_controls_gate"),
-    "fedevi_mask_shift": Path("outputs/fedevi_controls_gate"),
-    "fedevi_dg": Path("outputs/fedevi_dg_gate"),
-    "fedevi_seg_only": Path("outputs/fedevi_single_aux_controls"),
-    "fedavg_ord": Path("outputs/fedevi_single_aux_controls"),
+    CANDIDATE: Path("outputs/lodo"),
+    "fedavg": Path("outputs/lodo"),
+    "fedevi_mtl": Path("outputs/lodo"),
+    "fedevi_no_taskagg": Path("outputs/lodo"),
+    "fedevi_shuffle": Path("outputs/lodo"),
+    "fedevi_mask_shift": Path("outputs/lodo"),
+    "fedevi_dg": Path("outputs/lodo"),
+    "fedevi_seg_only": Path("outputs/lodo"),
+    "fedavg_ord": Path("outputs/lodo"),
 }
 COMPARATORS = tuple(method for method in METHOD_ROOTS if method != CANDIDATE)
-SEED42_RERUN_ROOTS = {
-    CANDIDATE: Path("outputs/fedevi_monotonic_snapshot344_seed42_rerun"),
-    "fedevi_shuffle": Path("outputs/fedevi_current_impl_reruns"),
-    "fedevi_mask_shift": Path("outputs/fedevi_current_impl_reruns"),
-    "fedevi_dg": Path("outputs/fedevi_current_impl_reruns"),
-}
+# Fresh campaigns use one implementation for all seeds. Historical replacement
+# paths are opt-in only, for explicitly supplied result-audit inputs.
+SEED42_RERUN_ROOTS: dict[str, Path] = {}
 
 
 def _run_dir(method: str, target: str, seed: int) -> Path:
-    # Seed-42 reruns remove implementation-snapshot mixing. Candidate reruns
-    # use the recovered 344b61c9 snapshot shared by seeds 43/44; matched-control
-    # reruns use their already-declared current implementation snapshot.
+    # Replacement inputs must be explicitly supplied for a historical audit;
+    # they are disabled for the normal single-revision campaign.
     rerun_root = SEED42_RERUN_ROOTS.get(method)
     rerun = (
-        rerun_root
-        / f"target_{target}"
-        / method
-        / f"seed_{seed}"
+        rerun_root / f"target_{target}" / method / f"seed_{seed}"
         if rerun_root is not None
         else Path("__no_rerun__")
     )
     if seed == 42 and (rerun / "COMPLETE").is_file():
         return rerun
-    return (
-        METHOD_ROOTS[method]
-        / f"target_{target}"
-        / method
-        / f"seed_{seed}"
-    )
+    return METHOD_ROOTS[method] / f"target_{target}" / method / f"seed_{seed}"
 
 
 def _truth(value: object) -> bool:
@@ -130,12 +118,7 @@ def _ensemble_records(
 def _ensemble_records_without_rerun(method: str, target: str) -> pd.DataFrame:
     frames = []
     for seed in SEEDS:
-        run = (
-            METHOD_ROOTS[method]
-            / f"target_{target}"
-            / method
-            / f"seed_{seed}"
-        )
+        run = METHOD_ROOTS[method] / f"target_{target}" / method / f"seed_{seed}"
         if not (run / "COMPLETE").is_file():
             raise FileNotFoundError(f"incomplete original run: {run}")
         frames.append(
@@ -249,8 +232,8 @@ def _paired_bootstrap_auc(
 
 def _calibration_path(method: str, target: str, seed: int) -> Path:
     roots = {
-        CANDIDATE: Path("outputs/fedevi_monotonic_gate_calibration"),
-        "fedavg": Path("outputs/fedavg_gate_calibration"),
+        CANDIDATE: Path("outputs/lodo_calibration"),
+        "fedavg": Path("outputs/lodo_calibration"),
     }
     return (
         roots[method]
@@ -304,9 +287,7 @@ def _metric_rows() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
                         "auc": roc_auc_score(labels, scores),
                     }
                 )
-            labels, scores, level = _evaluation_units(
-                _ensemble_records(method, target)
-            )
+            labels, scores, level = _evaluation_units(_ensemble_records(method, target))
             units[(method, target)] = (labels, scores)
             ensemble.append(
                 {
@@ -377,28 +358,13 @@ def _patient_aggregation_sensitivity_rows(
 
 def _rerun_provenance_rows() -> pd.DataFrame:
     rows = []
-    for method in (
-        CANDIDATE,
-        "fedevi_shuffle",
-        "fedevi_mask_shift",
-        "fedevi_dg",
-    ):
+    for method in SEED42_RERUN_ROOTS:
         for target in TARGETS:
             rerun_root = SEED42_RERUN_ROOTS[method]
-            rerun = (
-                rerun_root
-                / f"target_{target}"
-                / method
-                / "seed_42"
-            )
+            rerun = rerun_root / f"target_{target}" / method / "seed_42"
             if not (rerun / "COMPLETE").is_file():
                 continue
-            original = (
-                METHOD_ROOTS[method]
-                / f"target_{target}"
-                / method
-                / "seed_42"
-            )
+            original = METHOD_ROOTS[method] / f"target_{target}" / method / "seed_42"
             old_frame = pd.read_csv(original / "target_predictions.csv").sort_values(
                 "manifest_row"
             )
@@ -435,9 +401,7 @@ def _rerun_provenance_rows() -> pd.DataFrame:
                         np.max(np.abs(old_scores - new_scores))
                     ),
                     "original_auc": float(roc_auc_score(old_labels, old_scores)),
-                    "replacement_auc": float(
-                        roc_auc_score(new_labels, new_scores)
-                    ),
+                    "replacement_auc": float(roc_auc_score(new_labels, new_scores)),
                     "replacement_minus_original_auc": float(
                         roc_auc_score(new_labels, new_scores)
                         - roc_auc_score(old_labels, old_scores)
@@ -447,9 +411,7 @@ def _rerun_provenance_rows() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def _r0_replacement_sensitivity(
-    iterations: int, random_seed: int
-) -> pd.DataFrame:
+def _r0_replacement_sensitivity(iterations: int, random_seed: int) -> pd.DataFrame:
     variants = {
         "original_seed42": lambda target: _ensemble_records_without_rerun(
             "fedevi_dg", target
@@ -482,10 +444,7 @@ def _r0_replacement_sensitivity(
                     comparator_scores,
                     iterations,
                     np.random.default_rng(
-                        random_seed
-                        + 30000
-                        + 1000 * variant_index
-                        + target_index
+                        random_seed + 30000 + 1000 * variant_index + target_index
                     ),
                 )
             )
@@ -561,12 +520,8 @@ def _bootstrap_rows(
                 "ci95_lower": lower,
                 "ci95_upper": upper,
                 "positive_target_domains": positive_targets,
-                "bootstrap_probability_positive": float(
-                    np.mean(macro_draws > 0)
-                ),
-                "directional_gate": bool(
-                    macro_point >= 0 and positive_targets >= 3
-                ),
+                "bootstrap_probability_positive": float(np.mean(macro_draws > 0)),
+                "directional_gate": bool(macro_point >= 0 and positive_targets >= 3),
                 "ci_excludes_zero": bool(lower > 0 or upper < 0),
             }
         )
@@ -679,9 +634,7 @@ def _ordinal_dataset(
     observed = observed[finite]
     predicted_risk = predicted_risk[finite]
     normalized_levels = np.linspace(0.0, 1.0, len(observed_levels))
-    true_class = np.abs(
-        observed[:, None] - observed_levels[None, :]
-    ).argmin(axis=1)
+    true_class = np.abs(observed[:, None] - observed_levels[None, :]).argmin(axis=1)
     predicted_class = np.abs(
         predicted_risk[:, None] - normalized_levels[None, :]
     ).argmin(axis=1)
@@ -728,7 +681,7 @@ def _ordinal_rows(
     specs = {
         "BUSBRA": (
             [
-                Path("outputs/fedevi_monotonic_gate_explanations_v2")
+                Path("outputs/explanations")
                 / "target_BUSBRA"
                 / f"seed_{seed}"
                 / "predictions.csv"
@@ -738,9 +691,7 @@ def _ordinal_rows(
         ),
         "BUS-CoT": (
             [
-                Path("outputs/fedevi_monotonic_gate_buscot_reasoning_v3")
-                / f"seed_{seed}"
-                / "predictions.csv"
+                Path("outputs/buscot_explanations") / f"seed_{seed}" / "predictions.csv"
                 for seed in SEEDS
             ],
             np.linspace(0.0, 1.0, 6),
@@ -845,9 +796,7 @@ def _write_report(
     spatial: dict,
 ) -> None:
     seed_macros = (
-        per_seed.groupby(["method", "seed"], observed=True)["auc"]
-        .mean()
-        .reset_index()
+        per_seed.groupby(["method", "seed"], observed=True)["auc"].mean().reset_index()
     )
     seed_summary = (
         seed_macros.groupby("method", observed=True)["auc"]
@@ -910,29 +859,32 @@ def _write_report(
         "",
         patient_sensitivity.to_markdown(index=False, floatfmt=".4f"),
         "",
-        "## Implementation-rerun provenance",
-        "",
-        rerun_provenance.to_markdown(index=False, floatfmt=".4f"),
-        "",
-        "The replacement rule was implementation-snapshot consistency, not "
-        "observed performance. Shuffle and shifted-mask reruns were byte-identical; "
-        "R0 reruns were not, so both R0 analyses are retained below.",
-        "",
-        r0_sensitivity.to_markdown(index=False, floatfmt=".4f"),
-        "",
         "## Ordinal evidence",
         "",
         ordinal.to_markdown(index=False, floatfmt=".4f"),
         "",
-        "## Spatial corruption gate",
+        "## Spatial mask-shift control",
         "",
         f"- All three mask targets positive: {spatial['all_mask_targets_positive']}",
     ]
     for target in sorted(MASK_TARGETS):
         value = spatial[target]
         lines.append(
-            f"- {target}: Dice delta candidate - shifted mask "
-            f"{value['delta']:+.4f}"
+            f"- {target}: Dice delta candidate - shifted mask " f"{value['delta']:+.4f}"
+        )
+    if not rerun_provenance.empty:
+        lines.extend(
+            [
+                "",
+                "## Implementation-rerun audit",
+                "",
+                rerun_provenance.to_markdown(index=False, floatfmt=".4f"),
+                "",
+                "Explicitly supplied historical replacements are listed above; "
+                "prediction identity and differences must be read from this table.",
+                "",
+                r0_sensitivity.to_markdown(index=False, floatfmt=".4f"),
+            ]
         )
     lines.extend(
         [
@@ -953,7 +905,7 @@ def _write_report(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--output-root", type=Path, default=Path("outputs/fedevi_final_analysis")
+        "--output-root", type=Path, default=Path("outputs/lodo_analysis")
     )
     parser.add_argument("--bootstrap-iterations", type=int, default=2000)
     parser.add_argument("--random-seed", type=int, default=20260926)
@@ -973,8 +925,10 @@ def main() -> None:
         args.bootstrap_iterations, args.random_seed
     )
     rerun_provenance = _rerun_provenance_rows()
-    r0_sensitivity = _r0_replacement_sensitivity(
-        args.bootstrap_iterations, args.random_seed
+    r0_sensitivity = (
+        _r0_replacement_sensitivity(args.bootstrap_iterations, args.random_seed)
+        if "fedevi_dg" in SEED42_RERUN_ROOTS
+        else pd.DataFrame()
     )
     ordinal, ordinal_calibration = _ordinal_rows(
         args.bootstrap_iterations, args.random_seed
@@ -996,23 +950,21 @@ def main() -> None:
     target_bootstrap.to_csv(
         args.output_root / "paired_bootstrap_by_target.csv", index=False
     )
-    macro_bootstrap.to_csv(
-        args.output_root / "paired_bootstrap_macro.csv", index=False
-    )
+    macro_bootstrap.to_csv(args.output_root / "paired_bootstrap_macro.csv", index=False)
     calibration.to_csv(args.output_root / "calibration.csv", index=False)
     dca.to_csv(args.output_root / "decision_curve.csv", index=False)
-    dca_summary.to_csv(
-        args.output_root / "decision_curve_summary.csv", index=False
-    )
+    dca_summary.to_csv(args.output_root / "decision_curve_summary.csv", index=False)
     patient_sensitivity.to_csv(
         args.output_root / "patient_aggregation_sensitivity.csv", index=False
     )
-    rerun_provenance.to_csv(
-        args.output_root / "implementation_rerun_provenance.csv", index=False
-    )
-    r0_sensitivity.to_csv(
-        args.output_root / "r0_replacement_sensitivity.csv", index=False
-    )
+    if not rerun_provenance.empty:
+        rerun_provenance.to_csv(
+            args.output_root / "implementation_rerun_provenance.csv", index=False
+        )
+    if not r0_sensitivity.empty:
+        r0_sensitivity.to_csv(
+            args.output_root / "r0_replacement_sensitivity.csv", index=False
+        )
     ordinal.to_csv(args.output_root / "ordinal_metrics.csv", index=False)
     ordinal_calibration.to_csv(
         args.output_root / "ordinal_calibration.csv", index=False

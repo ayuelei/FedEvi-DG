@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 
-from fedusdg_mvp.metrics import (
+from fedevi_dg.metrics import (
     binary_metrics,
     clinical_reliability_metrics,
     select_source_threshold,
@@ -133,7 +133,9 @@ def main() -> None:
             _validate_run(run)
         predictions = [pd.read_csv(run / "target_predictions.csv") for run in runs]
         identity_columns = ["manifest_row", "image_path", "label"]
-        identities = [frame[identity_columns].reset_index(drop=True) for frame in predictions]
+        identities = [
+            frame[identity_columns].reset_index(drop=True) for frame in predictions
+        ]
         if any(not identities[0].equals(value) for value in identities[1:]):
             raise RuntimeError(f"target prediction rows differ across {method} seeds")
         if reference_identity is None:
@@ -193,15 +195,11 @@ def main() -> None:
             },
             "seed_auc_mean": float(np.mean(seed_aucs)),
             "seed_auc_sample_std": float(np.std(seed_aucs, ddof=1)),
-            "seed_lesion_dice_mean": (
-                float(np.mean(seed_dice)) if seed_dice else None
-            ),
+            "seed_lesion_dice_mean": (float(np.mean(seed_dice)) if seed_dice else None),
         }
 
     assert labels is not None and ensemble is not None
-    auc_ci, deltas = _bootstrap(
-        labels, ensemble_scores, args.bootstrap_replicates
-    )
+    auc_ci, deltas = _bootstrap(labels, ensemble_scores, args.bootstrap_replicates)
     for method in METHODS:
         method_reports[method]["ensemble_auc_bootstrap_95_ci"] = auc_ci[method]
     point_deltas = {
@@ -237,7 +235,9 @@ def main() -> None:
     }
     args.output_dir.mkdir(parents=True)
     ensemble.to_csv(args.output_dir / "ensemble_predictions.csv", index=False)
-    pd.DataFrame(seed_rows).to_csv(args.output_dir / "per_seed_metrics.csv", index=False)
+    pd.DataFrame(seed_rows).to_csv(
+        args.output_dir / "per_seed_metrics.csv", index=False
+    )
     (args.output_dir / "summary.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )

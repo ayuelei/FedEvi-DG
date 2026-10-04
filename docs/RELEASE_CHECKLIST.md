@@ -7,7 +7,7 @@
 - Raw-data preparation, mask/BI-RADS attachment and split-fingerprint validation.
 - Source calibration, explanation/clinical utility evaluation and statistical aggregation.
 - Unit tests, environment pins, frozen protocol summaries and quantitative plotting source.
-- Aggregate result tables, source hashes and the recovered candidate implementation snapshot.
+- Aggregate result tables, file/split hashes and a data-free nine-method cleanup regression record.
 
 ## Excluded
 
@@ -15,6 +15,7 @@
 - Patient/record split lists, individual predictions, checkpoints and pretrained weights.
 - Private manuscripts, internal research diaries, development Git history and credentials.
 - Artwork containing medical examples and the editorially selected framework image.
+- Earlier physics/frequency/relay implementations, obsolete exploration scripts and historical source snapshots (retained locally and in earlier GitHub commits).
 
 ## Validation scope
 

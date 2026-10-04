@@ -18,9 +18,9 @@ import torch
 from sklearn.metrics import roc_auc_score
 from torch.utils.data import DataLoader
 
-from fedusdg_mvp.dataset import ManifestImageDataset
-from fedusdg_mvp.preprocessing import SourceNormalization
-from run_fedusdg_mvp import build_pretrained_model
+from fedevi_dg.dataset import ManifestImageDataset
+from fedevi_dg.preprocessing import SourceNormalization
+from train_fedevi import build_pretrained_model
 
 
 def _rebuild(run_dir: Path, device: torch.device):
@@ -34,9 +34,7 @@ def _rebuild(run_dir: Path, device: torch.device):
         use_evidence_bottleneck=bool(
             resolved.get("diagnostic_evidence_bottleneck", True)
         ),
-        monotonic_ordinal=bool(
-            resolved.get("monotonic_ordinal_evidence", False)
-        ),
+        monotonic_ordinal=bool(resolved.get("monotonic_ordinal_evidence", False)),
     )
     state = torch.load(
         run_dir / "best_global.pt", map_location="cpu", weights_only=False
@@ -90,9 +88,7 @@ def main() -> None:
             raw = torch.as_tensor(batch["raw_image"]).to(device)
             content = torch.as_tensor(batch["content_mask"]).to(device).bool()
             evidence = model.forward_with_evidence(raw, content_mask=content)
-            predicted_mask = (
-                torch.sigmoid(evidence.lesion_logits) >= 0.5
-            ) & content
+            predicted_mask = (torch.sigmoid(evidence.lesion_logits) >= 0.5) & content
             lesion_only = raw.masked_fill(~predicted_mask, 0.0)
             lesion_erased = raw.masked_fill(predicted_mask, 0.0)
             only_evidence = model.forward_with_evidence(
@@ -102,12 +98,10 @@ def main() -> None:
                 lesion_erased, content_mask=content
             )
             original_score = torch.softmax(evidence.binary_logits, dim=1)[:, 1]
-            lesion_only_score = torch.softmax(
-                only_evidence.binary_logits, dim=1
-            )[:, 1]
-            lesion_erased_score = torch.softmax(
-                erased_evidence.binary_logits, dim=1
-            )[:, 1]
+            lesion_only_score = torch.softmax(only_evidence.binary_logits, dim=1)[:, 1]
+            lesion_erased_score = torch.softmax(erased_evidence.binary_logits, dim=1)[
+                :, 1
+            ]
             low_risk_logits = model.classify_from_evidence(
                 evidence.lesion_features,
                 torch.zeros(len(raw), device=device),
@@ -153,12 +147,8 @@ def main() -> None:
                         "ordinal_risk": float(ordinal_risk[index]),
                         "ordinal_clamp_low_score": float(low_risk_score[index]),
                         "ordinal_clamp_high_score": float(high_risk_score[index]),
-                        "ordinal_clamp_low_log_odds": float(
-                            low_risk_log_odds[index]
-                        ),
-                        "ordinal_clamp_high_log_odds": float(
-                            high_risk_log_odds[index]
-                        ),
+                        "ordinal_clamp_low_log_odds": float(low_risk_log_odds[index]),
+                        "ordinal_clamp_high_log_odds": float(high_risk_log_odds[index]),
                         "predicted_lesion_fraction": float(
                             predicted_mask[index].float().mean()
                         ),
@@ -174,12 +164,8 @@ def main() -> None:
     lesion_erased = predictions["lesion_erased_score"].to_numpy(dtype=float)
     high = predictions["ordinal_clamp_high_score"].to_numpy(dtype=float)
     low = predictions["ordinal_clamp_low_score"].to_numpy(dtype=float)
-    high_log_odds = predictions["ordinal_clamp_high_log_odds"].to_numpy(
-        dtype=float
-    )
-    low_log_odds = predictions["ordinal_clamp_low_log_odds"].to_numpy(
-        dtype=float
-    )
+    high_log_odds = predictions["ordinal_clamp_high_log_odds"].to_numpy(dtype=float)
+    low_log_odds = predictions["ordinal_clamp_low_log_odds"].to_numpy(dtype=float)
     malignant = labels == 1
     original_auc = _safe_auc(labels, original)
     lesion_only_auc = _safe_auc(labels, lesion_only)
@@ -191,9 +177,7 @@ def main() -> None:
     if finite_birads.sum() >= 2:
         spearman = float(
             predictions.loc[finite_birads, "ordinal_risk"].corr(
-                pd.to_numeric(
-                    predictions.loc[finite_birads, "birads_ordinal"]
-                ),
+                pd.to_numeric(predictions.loc[finite_birads, "birads_ordinal"]),
                 method="spearman",
             )
         )
@@ -203,9 +187,7 @@ def main() -> None:
         "lesion_only_auc": lesion_only_auc,
         "lesion_erased_auc": lesion_erased_auc,
         "lesion_sufficiency_auc_gap": _difference(original_auc, lesion_only_auc),
-        "lesion_necessity_auc_drop": _difference(
-            original_auc, lesion_erased_auc
-        ),
+        "lesion_necessity_auc_drop": _difference(original_auc, lesion_erased_auc),
         "malignant_score_drop_after_lesion_erasure": (
             float(np.mean(original[malignant] - lesion_erased[malignant]))
             if malignant.any()
@@ -213,9 +195,7 @@ def main() -> None:
         ),
         "ordinal_high_minus_low_mean": float(np.mean(high - low)),
         "ordinal_positive_intervention_fraction": float(np.mean(high > low)),
-        "ordinal_non_decreasing_intervention_fraction": float(
-            np.mean(high >= low)
-        ),
+        "ordinal_non_decreasing_intervention_fraction": float(np.mean(high >= low)),
         "ordinal_negative_intervention_count": int(np.sum(high < low)),
         "ordinal_log_odds_high_minus_low_mean": float(
             np.mean(high_log_odds - low_log_odds)

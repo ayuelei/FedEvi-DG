@@ -62,9 +62,7 @@ def main() -> None:
                 value = archive.read(str(row.image_path))
                 digest = hashlib.sha256(value).hexdigest()
                 if digest != str(row.sha256):
-                    raise ValueError(
-                        f"BUS-CoT byte hash mismatch for {row.image_path}"
-                    )
+                    raise ValueError(f"BUS-CoT byte hash mismatch for {row.image_path}")
                 relative = Path("images") / f"{row.buscot_key}.png"
                 (staging / relative).write_bytes(value)
                 relative_paths.append(str(relative))
@@ -72,9 +70,7 @@ def main() -> None:
         materialized["archive_image_path"] = materialized["image_path"]
         materialized["image_path"] = relative_paths
         if "birads" in materialized:
-            materialized["birads_ordinal"] = materialized["birads"].map(
-                _birads_ordinal
-            )
+            materialized["birads_ordinal"] = materialized["birads"].map(_birads_ordinal)
         materialized.to_csv(staging / "manifest.csv", index=False)
         staging.rename(args.output_root)
     finally:

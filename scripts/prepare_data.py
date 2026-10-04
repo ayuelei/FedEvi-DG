@@ -8,8 +8,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts.build_fedusdg_provenance import (
-    _authoritative_rows, _apply_exact_duplicate_policy,
+from scripts.parse_source_data import (
+    _authoritative_rows,
+    _apply_exact_duplicate_policy,
 )
 
 
@@ -33,18 +34,39 @@ def main():
     excluded.to_csv(output / "exact_duplicate_exclusions.csv", index=False)
 
     def run(script, *flags):
-        subprocess.run([sys.executable, str(ROOT / "scripts" / script),
-                        *map(str, flags)], cwd=ROOT, check=True)
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / script), *map(str, flags)],
+            cwd=ROOT,
+            check=True,
+        )
 
-    run("attach_birads_to_metadata.py", "--raw-root", raw,
-        "--metadata-csv", output / "metadata.csv",
-        "--output-csv", output / "metadata_birads.csv",
-        "--summary-json", output / "birads_coverage.json")
-    run("build_fedusdg_mvp_manifests.py", "--data-root", raw,
-        "--metadata-csv", output / "metadata_birads.csv",
-        "--output-root", output / "classification_splits")
-    run("build_fedevi_manifests.py", "--source-root", output / "classification_splits",
-        "--output-root", output / "lodo")
+    run(
+        "attach_birads_to_metadata.py",
+        "--raw-root",
+        raw,
+        "--metadata-csv",
+        output / "metadata.csv",
+        "--output-csv",
+        output / "metadata_birads.csv",
+        "--summary-json",
+        output / "birads_coverage.json",
+    )
+    run(
+        "build_lodo_manifests.py",
+        "--data-root",
+        raw,
+        "--metadata-csv",
+        output / "metadata_birads.csv",
+        "--output-root",
+        output / "classification_splits",
+    )
+    run(
+        "build_fedevi_manifests.py",
+        "--source-root",
+        output / "classification_splits",
+        "--output-root",
+        output / "lodo",
+    )
     run("verify_splits.py", "--manifest-root", output / "lodo")
     print(f"Verified manifests: {output / 'lodo'}")
 

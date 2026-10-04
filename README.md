@@ -41,16 +41,16 @@ No target images, labels or statistics are used to train, normalize, choose chec
 ## Layout
 
 ```text
-fedusdg_mvp/                # Preserved implementation; historical package name
+fedevi_dg/                 # Paper-only model, losses and federated training
 scripts/                   # Preparation, training, calibration, evaluation, analysis
 configs/                   # Frozen protocol and data-free filtering rules
-tests/fedusdg_mvp/          # Synthetic/unit regression tests
+tests/fedevi_dg/            # Synthetic/unit regression tests
 reference_results/         # Aggregate metrics only, not predictions or dataset rows
-reproducibility/            # Source hashes, split digests, historical candidate source
+reproducibility/            # File/split digests and data-free validation records
 docs/                      # Data instructions, commands and release boundaries
 ```
 
-The shared training engine imports spectral/physics support modules from earlier development. They are retained to keep imports and source provenance intact; those modules are **not** the FedEvi-DG paper's proposed mechanism. The public experiment entry point restricts the available methods to the paper's methods and controls.
+The current tree contains only FedEvi-DG and the eight paper baselines/controls listed in [experiment commands](docs/REPRODUCTION.md). Earlier physics, frequency-transfer and relay implementations have been removed. A synthetic nine-method regression checks that retained training behavior is unchanged; it is not a new performance experiment. Earlier repository commits remain in Git history and are not part of the current implementation.
 
 ## Scientific scope
 

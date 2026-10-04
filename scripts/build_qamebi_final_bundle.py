@@ -126,9 +126,7 @@ def _split_domain_inventory(
 def _canonical_patient_groups(frame: pd.DataFrame) -> set[tuple[str, str]]:
     return {
         (str(dataset), " ".join(str(patient).split()).casefold())
-        for dataset, patient in zip(
-            frame["dataset"], frame["patient_id"], strict=True
-        )
+        for dataset, patient in zip(frame["dataset"], frame["patient_id"], strict=True)
     }
 
 
@@ -170,9 +168,7 @@ def main() -> None:
     val_parts: list[pd.DataFrame] = []
     source_provenance: dict[str, dict[str, list[str]]] = {}
     for domain_index, domain in enumerate(sorted(SOURCE_DOMAINS)):
-        inventory, inventory_provenance = _read_domain_inventory(
-            args.lodo_root, domain
-        )
+        inventory, inventory_provenance = _read_domain_inventory(args.lodo_root, domain)
         train, val = _split_domain_inventory(inventory, domain, domain_index)
         if not _canonical_patient_groups(train).isdisjoint(
             _canonical_patient_groups(val)
@@ -252,9 +248,7 @@ def main() -> None:
             "qamebi_manifest": str(args.qamebi_manifest.resolve()),
             "qamebi_manifest_sha256": _sha256_file(args.qamebi_manifest),
             "qamebi_audit_summary": str(args.qamebi_audit_summary.resolve()),
-            "qamebi_audit_summary_sha256": _sha256_file(
-                args.qamebi_audit_summary
-            ),
+            "qamebi_audit_summary_sha256": _sha256_file(args.qamebi_audit_summary),
             "frozen_protocol": str(args.protocol.resolve()),
             "frozen_protocol_sha256": _sha256_file(args.protocol),
             "model_predictions_seen": False,

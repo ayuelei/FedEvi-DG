@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Attach within-domain BI-RADS ordinal levels to audited FedUS-DG metadata.
+"""Attach within-domain BI-RADS ordinal levels to audited FedEvi-DG metadata.
 
 Reads the raw sidecar files (BUSBRA ``bus_data.csv`` and the shared
 ``BIRADS&FOLD.xlsx`` for GDPH/SYSUCC), maps every category to a strictly
@@ -92,9 +92,7 @@ def build_lookup(raw_root: Path) -> dict[str, dict[str, float]]:
         if not levels:
             continue
         stem = str(identifier).strip()
-        by_stem.setdefault(stem, {}).setdefault(
-            "GDPH", sum(levels) / len(levels)
-        )
+        by_stem.setdefault(stem, {}).setdefault("GDPH", sum(levels) / len(levels))
         by_stem[stem].setdefault("SYSUCC", sum(levels) / len(levels))
     return by_stem
 
@@ -115,7 +113,10 @@ def main() -> int:
     metadata = pd.read_csv(args.metadata_csv)
 
     levels: list[float] = []
-    coverage = {domain: {"rows": 0, "matched": 0} for domain in sorted(metadata["dataset"].unique())}
+    coverage = {
+        domain: {"rows": 0, "matched": 0}
+        for domain in sorted(metadata["dataset"].unique())
+    }
     ambiguous = 0
     for row in metadata.itertuples(index=False):
         domain = str(row.dataset)
